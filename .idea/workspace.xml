@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6fc92de0-2dd4-49ec-8fb1-7c3e6d7cb62f" name="Changes" comment="" />
+    <list default="true" id="6fc92de0-2dd4-49ec-8fb1-7c3e6d7cb62f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CodeScrambler.py" beforeDir="false" afterPath="$PROJECT_DIR$/CodeScrambler.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +23,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "RE-Sentire"
+  }
+}]]></component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/saptarshi-laha/CodeScrambler",
@@ -72,7 +81,7 @@
       <workItem from="1717785968889" duration="1394000" />
       <workItem from="1717787482145" duration="109000" />
       <workItem from="1717787595463" duration="3929000" />
-      <workItem from="1717792897562" duration="447000" />
+      <workItem from="1717792897562" duration="1801000" />
     </task>
     <servers />
   </component>
@@ -91,6 +100,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717792782581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv" />
+    <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717795257587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
