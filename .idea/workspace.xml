@@ -81,7 +81,7 @@
       <workItem from="1717785968889" duration="1394000" />
       <workItem from="1717787482145" duration="109000" />
       <workItem from="1717787595463" duration="3929000" />
-      <workItem from="1717792897562" duration="1801000" />
+      <workItem from="1717792897562" duration="4310000" />
     </task>
     <servers />
   </component>
@@ -100,6 +100,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717795257587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717798116113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
