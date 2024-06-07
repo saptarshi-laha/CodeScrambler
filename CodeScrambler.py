@@ -1,8 +1,8 @@
 import distorm3
 import pefile
 
-def read_pe_file(file_path):
 
+def read_pe_file(file_path):
     executable_sections_data = {}
 
     try:
@@ -31,8 +31,8 @@ def read_pe_file(file_path):
     except pefile.PEFormatError as e:
         print(f"Error reading PE file: {e}")
 
-def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va):
 
+def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va):
     status_success = False
     output = {}
 
@@ -71,16 +71,18 @@ def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oe
     status_success = True
     return status_success, output, oep_index
 
-def main():
 
+def main():
     filepath = input("Enter the path to the PE file :\n")
     code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va = read_pe_file(filepath)
-    success, output, oep_index = disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va)
+    success, output, oep_index = disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section,
+                                                          pe_oep_section_va)
 
-    if success == True:
+    if success:
         print("Successfully disassembled instructions");
-    elif success == False:
+    elif not success:
         print("Failed to disassemble instructions");
+
 
 if __name__ == "__main__":
     main()
