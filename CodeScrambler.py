@@ -37,7 +37,6 @@ def read_pe_file(file_path):
 
 
 def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va):
-    status_success = False
     output = {}
 
     for section_name, data in code.items():
@@ -57,6 +56,7 @@ def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oe
                 counter += 1
         else:
             print("Unsupported PE type")
+            status_success = False
             return status_success, output, -1
 
     oep_offset = pe_ib + pe_oep_section_va
@@ -80,12 +80,19 @@ def add_instructions_and_add_jump_positional_indicators(disassembled_machine_cod
     x64_instructions = {'90', 1, '4889c0', 3, '5058', 2, '488d4000', 4}
     x86_instructions = {'90', 1, '89c0', 2, '5058', 2, '8d4000', 3}
 
+    # The aim for the above is to be imported from a different pre-defined list.
+    # These are just examples above used for testing. This code will be added in later.
+
+
+
 
 def main():
     if len(sys.argv) < 3:
         print(
             "Usage: python3 CodeScrambler.py <pefile> <complexity>\nThe complexity argument is a number between 0 and "
-            "100 which indicates the number of junk arguments inserted into machine code.")
+            "100 which indicates the maximum number of junk arguments inserted into machine code between consecutive "
+            "instructions.\nThe selection of junk opcodes is random and so is the number of junk arguments, "
+            "but this number will never exceed complexity.")
     else:
         filepath = sys.argv[1]
         complexity_percent = int(sys.argv[2])
@@ -95,6 +102,7 @@ def main():
             print("Successfully loaded and read PE file")
             success, output, oep_index = disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section,
                                                                   pe_oep_section_va)
+            print(output)
             if success:
                 print("Successfully disassembled instructions")
                 add_instructions_and_add_jump_positional_indicators(output, pe_type, oep_index, complexity_percent)
