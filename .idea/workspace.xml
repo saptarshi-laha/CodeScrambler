@@ -7,6 +7,7 @@
     <list default="true" id="6fc92de0-2dd4-49ec-8fb1-7c3e6d7cb62f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CodeScrambler.py" beforeDir="false" afterPath="$PROJECT_DIR$/CodeScrambler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +103,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CodeScrambler.py" />
-      <option name="PARAMETERS" value="$USER_HOME$/Downloads/rtf.exe" />
+      <option name="PARAMETERS" value="$USER_HOME$/Downloads/rtf.exe 5" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -136,7 +137,7 @@
       <workItem from="1717787482145" duration="109000" />
       <workItem from="1717787595463" duration="3929000" />
       <workItem from="1717792897562" duration="9428000" />
-      <workItem from="1717964129171" duration="2999000" />
+      <workItem from="1717964129171" duration="4373000" />
     </task>
     <servers />
   </component>
@@ -156,6 +157,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717964685047" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler__2_.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717967070348" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CodeScrambler$CodeScrambler__2_.coverage" NAME="CodeScrambler Coverage Results" MODIFIED="1717967580096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
