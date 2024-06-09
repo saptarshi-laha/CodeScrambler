@@ -1,5 +1,6 @@
 import distorm3
 import pefile
+import sys
 
 
 def read_pe_file(file_path):
@@ -26,10 +27,13 @@ def read_pe_file(file_path):
                 section_name = section.Name.decode().rstrip().rstrip('\x00')
                 executable_sections_data[section_name] = section_data
 
-        return executable_sections_data, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va
+        status_success = True
+        return status_success, executable_sections_data, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va
 
-    except pefile.PEFormatError as e:
+    except Exception as e:
         print(f"Error reading PE file: {e}")
+        status_success = False
+        return status_success, -1, -1, -1, -1, -1, -1
 
 
 def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va):
@@ -53,7 +57,7 @@ def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oe
                 counter += 1
         else:
             print("Unsupported PE type")
-            return status_success, output
+            return status_success, output, -1
 
     oep_offset = pe_ib + pe_oep_section_va
     oep_index = 0
@@ -72,16 +76,35 @@ def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oe
     return status_success, output, oep_index
 
 
-def main():
-    filepath = input("Enter the path to the PE file :\n")
-    code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va = read_pe_file(filepath)
-    success, output, oep_index = disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section,
-                                                          pe_oep_section_va)
+def add_instructions_and_add_jump_positional_indicators(disassembled_machine_code, pe_type, oep_index, complexity):
+    x64_instructions = {'90', 1, '4889c0', 3, '5058', 2, '488d4000', 4}
+    x86_instructions = {'90', 1, '89c0', 2, '5058', 2, '8d4000', 3}
 
-    if success:
-        print("Successfully disassembled instructions");
-    elif not success:
-        print("Failed to disassemble instructions");
+
+def main():
+    if len(sys.argv) < 3:
+        print(
+            "Usage: python3 CodeScrambler.py <pefile> <complexity>\nThe complexity argument is a number between 0 and "
+            "100 which indicates the number of junk arguments inserted into machine code.")
+    else:
+        filepath = sys.argv[1]
+        complexity_percent = int(sys.argv[2])
+        success, code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va = read_pe_file(filepath)
+
+        if success:
+            print("Successfully loaded and read PE file")
+            success, output, oep_index = disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section,
+                                                                  pe_oep_section_va)
+            if success:
+                print("Successfully disassembled instructions")
+                add_instructions_and_add_jump_positional_indicators(output, pe_type, oep_index, complexity_percent)
+            elif not success:
+                print("Failed to disassemble instructions")
+                return 1
+
+        elif not success:
+            print("Failed to load and read PE file")
+            return 1
 
 
 if __name__ == "__main__":
