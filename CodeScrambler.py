@@ -77,45 +77,52 @@ def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oe
 
 
 def add_instructions_and_add_jump_positional_indicators(disassembled_machine_code, pe_type):
-    x64_instructions = []
-    x86_instructions = []
-    instruction_count = 0
+    try:
+        x64_instructions = []
+        x86_instructions = []
+        instruction_count = 0
 
-    if pe_type == 0x10b:
-        with open('x86_instructions.txt', 'r') as file:
-            for line in file:
-                line = line.strip()
-                if line:
-                    parts = line.replace('(', '').replace(')', '').split(',')
-                    instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
-                    x86_instructions.append(instruction)
-                    instruction_count += 1
-    elif pe_type == 0x20b:
-        with open('x64_instructions.txt', 'r') as file:
-            for line in file:
-                line = line.strip()
-                if line:
-                    parts = line.replace('(', '').replace(')', '').split(',')
-                    instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
-                    x64_instructions.append(instruction)
-                    instruction_count += 1
+        if pe_type == 0x10b:
+            with open('x86_instructions.txt', 'r') as file:
+                for line in file:
+                    line = line.strip()
+                    if line:
+                        parts = line.replace('(', '').replace(')', '').split(',')
+                        instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
+                        x86_instructions.append(instruction)
+                        instruction_count += 1
+        elif pe_type == 0x20b:
+            with open('x64_instructions.txt', 'r') as file:
+                for line in file:
+                    line = line.strip()
+                    if line:
+                        parts = line.replace('(', '').replace(')', '').split(',')
+                        instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
+                        x64_instructions.append(instruction)
+                        instruction_count += 1
 
-    for section_name, instructions in disassembled_machine_code.items():
-        total_instructions_in_section = len(instructions) * (instruction_count + 3)
-        updated_instructions = {}
-        for index, (_, _, _) in enumerate(instructions.values()):
-            for i in range(0, total_instructions_in_section):
-                if i % (instruction_count + 3) == instruction_count + 2:
-                    updated_instructions[i] = instructions[index]
-                elif i % (instruction_count + 3) == instruction_count + 1:
-                    updated_instructions[i] = (-3,-3,-3)
-                elif i % (instruction_count + 3) == instruction_count:
-                    updated_instructions[i] = (-2,-2,-2)
-                else:
-                    updated_instructions[i] = (-1, -1, -1)
-        disassembled_machine_code[section_name] = updated_instructions
+        for section_name, instructions in disassembled_machine_code.items():
+            total_instructions_in_section = len(instructions) * (instruction_count + 3)
+            updated_instructions = {}
+            for index, (_, _, _) in enumerate(instructions.values()):
+                for i in range(0, total_instructions_in_section):
+                    if i % (instruction_count + 3) == instruction_count + 2:
+                        updated_instructions[i] = instructions[index]
+                    elif i % (instruction_count + 3) == instruction_count + 1:
+                        updated_instructions[i] = (-3,-3,-3)
+                    elif i % (instruction_count + 3) == instruction_count:
+                        updated_instructions[i] = (-2,-2,-2)
+                    else:
+                        updated_instructions[i] = (-1, -1, -1)
+            disassembled_machine_code[section_name] = updated_instructions
 
-    print(disassembled_machine_code)
+        status_success = True
+        return status_success, disassembled_machine_code
+
+    except Exception as e:
+        print(f"Error reading Junk Instruction file: {e}")
+        status_success = False
+        return status_success, -1
 
 def main():
     if len(sys.argv) < 4:
@@ -139,7 +146,16 @@ def main():
                                                                   pe_oep_section_va)
             if success:
                 print("Successfully disassembled instructions")
-                add_instructions_and_add_jump_positional_indicators(output, pe_type)
+                success, output = add_instructions_and_add_jump_positional_indicators(output, pe_type)
+
+                if success:
+                    print("Successfully added positional indicators")
+                    print(output)
+
+                elif not success:
+                    print("Failed to add positional indicators")
+                    exit(1)
+
             elif not success:
                 print("Failed to disassemble instructions")
                 exit(1)
