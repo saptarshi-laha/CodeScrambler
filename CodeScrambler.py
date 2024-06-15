@@ -157,11 +157,16 @@ def add_junk_instructions_to_positional_indicators(positional_indicators, comple
     return status_success, positional_indicators
 
 
+def recompile_pe_file(positional_output, filepath):
+    status_success = True
+    return status_success
+
+
 def main():
     if len(sys.argv) < 5:
         print(
-            "Usage: python3 CodeScrambler.py <pefile> <junk_instruction_complexity> <jump_complexity> <conditional "
-            "jump on(1)/off(0)> <call/jump_switching on(1)/off(0)>")
+            "Usage: python3 CodeScrambler.py <pefile> <junk_instruction_complexity> <jump_complexity> <conditional_"
+            "jump_on(1)/off(0)> <call/jump_switching_on(1)/off(0)>")
         exit(1)
     else:
         filepath = sys.argv[1]
@@ -177,18 +182,25 @@ def main():
                                                                   pe_oep_section_va)
             if success:
                 print("Successfully disassembled instructions")
-                success, positional_output, junk_instructions = add_instructions_and_add_jump_positional_indicators(
+                success, output, junk_instructions = add_instructions_and_add_jump_positional_indicators(
                     output, pe_type, complexity_junk_instr)
 
                 if success:
                     print("Successfully added positional indicators")
-                    success, positional_output = add_junk_instructions_to_positional_indicators(positional_output,
-                                                                                                complexity_junk_instr,
-                                                                                                junk_instructions)
+                    success, output = add_junk_instructions_to_positional_indicators(output,
+                                                                                     complexity_junk_instr,
+                                                                                     junk_instructions)
 
                     if success:
                         print("Successfully added junk instructions to positions")
-                        print(positional_output)
+                        success = recompile_pe_file(output, filepath)
+
+                        if success:
+                            print("Successfully recompiled PE file")
+
+                        elif not success:
+                            print("Failed to recompile PE file")
+                            exit(1)
 
                     elif not success:
                         print("Error adding junk instructions to positions")
