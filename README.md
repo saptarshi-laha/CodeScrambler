@@ -29,5 +29,12 @@ To use CodeScrambler, run the main script with the path to the binary you want t
 This section will be updated when the project nears completion
 ```
 
+## Release Timeline
+- Adding junk code based on complexity [x] - Date: 15/06/2024
+- Adding jumps/jump dependencies [ ]
+- Adjusting existing call/jump offsets [ ]
+- Extending to calls [ ]
+- Recompiling the binary with adjustments [ ]
+
 ## Contact
 For any questions or support, please create an issue on the GitHub repository.

@@ -1,7 +1,7 @@
 import distorm3
 import pefile
 import sys
-
+import numpy
 
 def read_pe_file(file_path):
     executable_sections_data = {}
@@ -76,11 +76,15 @@ def disassemble_machine_code(code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oe
     return status_success, output, oep_index
 
 
-def add_instructions_and_add_jump_positional_indicators(disassembled_machine_code, pe_type):
+def add_instructions_and_add_jump_positional_indicators(disassembled_machine_code, pe_type, complexity):
+    if complexity <= 0:
+        print("No complexity defined")
+        status_success = False
+        return status_success, -1, -1
+
     try:
         x64_instructions = []
         x86_instructions = []
-        instruction_count = 0
 
         if pe_type == 0x10b:
             with open('x86_instructions.txt', 'r') as file:
@@ -90,54 +94,79 @@ def add_instructions_and_add_jump_positional_indicators(disassembled_machine_cod
                         parts = line.replace('(', '').replace(')', '').split(',')
                         instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
                         x86_instructions.append(instruction)
-                        instruction_count += 1
         elif pe_type == 0x20b:
             with open('x64_instructions.txt', 'r') as file:
                 for line in file:
                     line = line.strip()
                     if line:
                         parts = line.replace('(', '').replace(')', '').split(',')
-                        instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
+                        instruction = (parts[0].strip().strip("'"), int(parts[1].strip()), -1)
                         x64_instructions.append(instruction)
-                        instruction_count += 1
 
         for section_name, instructions in disassembled_machine_code.items():
-            total_instructions_in_section = len(instructions) * (instruction_count + 3)
+            total_instructions_in_section = len(instructions) * (complexity + 3)
             updated_instructions = {}
             for index, (_, _, _) in enumerate(instructions.values()):
-                for i in range(0, total_instructions_in_section):
-                    if i % (instruction_count + 3) == instruction_count + 2:
-                        updated_instructions[i] = instructions[index]
-                    elif i % (instruction_count + 3) == instruction_count + 1:
-                        updated_instructions[i] = (-3,-3,-3)
-                    elif i % (instruction_count + 3) == instruction_count:
-                        updated_instructions[i] = (-2,-2,-2)
+                for i in range(0, complexity + 3):
+                    if i % (complexity + 3) == complexity + 2:
+                        updated_instructions[index*(complexity + 3)+i] = instructions[index]
+                    elif i % (complexity + 3) == complexity + 1:
+                        updated_instructions[index*(complexity + 3)+i] = (-3,-3,-3)
+                    elif i % (complexity + 3) == complexity:
+                        updated_instructions[index*(complexity + 3)+i] = (-2,-2,-2)
                     else:
-                        updated_instructions[i] = (-1, -1, -1)
+                        updated_instructions[index*(complexity + 3)+i] = (-1, -1, -1)
             disassembled_machine_code[section_name] = updated_instructions
 
         status_success = True
-        return status_success, disassembled_machine_code
+        if pe_type == 0x10b:
+            return status_success, disassembled_machine_code, x86_instructions
+        elif pe_type == 0x20b:
+            return status_success, disassembled_machine_code, x64_instructions
 
     except Exception as e:
         print(f"Error reading Junk Instruction file: {e}")
         status_success = False
-        return status_success, -1
+        return status_success, -1, -1
+
+def add_junk_instructions_to_positional_indicators(positional_indicators, complexity, junk_instructions):
+    for section_name, instructions in positional_indicators.items():
+        updated_instructions = {}
+        complexity_counter = 0
+        max_complexity = random_integer = numpy.random.randint(0, complexity + 1)
+        updated_index = 0
+        for index, (size, opcode, disassembly) in enumerate(instructions.values()):
+            if (size == -2 and opcode == -2 and disassembly == -2):
+                complexity_counter = 0
+                max_complexity = numpy.random.randint(0, complexity + 1)
+
+            if (size == -1 and opcode == -1 and disassembly == -1 and complexity_counter <= max_complexity):
+                updated_instructions[updated_index] = junk_instructions[numpy.random.randint(0, len(junk_instructions))]
+                updated_index += 1
+                complexity_counter += 1
+            elif (size == -1 and opcode == -1 and disassembly == -1 and complexity_counter > max_complexity):
+                continue
+            else:
+                updated_instructions[updated_index] = instructions[index]
+                updated_index += 1
+
+        positional_indicators[section_name] = updated_instructions
+
+    status_success = True
+    return status_success, positional_indicators
+
 
 def main():
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         print(
-            "Usage: python3 CodeScrambler.py <pefile> <junk_instruction_complexity> <jump_complexity> <conditional jump on(1)/off(0)>\nThe <junk_instruction_complexity> argument is a number between 0 and "
-            "N which indicates the maximum number of junk arguments inserted into machine code between consecutive "
-            "instructions.\nThe selection of junk opcodes is random and so is the number of junk arguments, "
-            "but this number will never exceed complexity.\nIt is also important to remember that the complexity "
-            "cannot exceed the number of junk instructions provided in the list.")
+            "Usage: python3 CodeScrambler.py <pefile> <junk_instruction_complexity> <jump_complexity> <conditional jump on(1)/off(0)> <call/jump_switching on(1)/off(0)>")
         exit(1)
     else:
         filepath = sys.argv[1]
         complexity_junk_instr = int(sys.argv[2])
         complexity_jmp = int(sys.argv[3])
         conditional_jmp = int(sys.argv[4])
+        call_jump_switching = int(sys.argv[5])
         success, code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va = read_pe_file(filepath)
 
         if success:
@@ -146,11 +175,19 @@ def main():
                                                                   pe_oep_section_va)
             if success:
                 print("Successfully disassembled instructions")
-                success, output = add_instructions_and_add_jump_positional_indicators(output, pe_type)
+                success, positional_output, junk_instructions = add_instructions_and_add_jump_positional_indicators(output, pe_type, complexity_junk_instr)
 
                 if success:
                     print("Successfully added positional indicators")
-                    print(output)
+                    success, positional_output = add_junk_instructions_to_positional_indicators(positional_output, complexity_junk_instr, junk_instructions)
+
+                    if success:
+                        print("Successfully added junk instructions to positions")
+                        print(positional_output)
+
+                    elif not success:
+                        print("Error adding junk instructions to positions")
+                        exit(1)
 
                 elif not success:
                     print("Failed to add positional indicators")
