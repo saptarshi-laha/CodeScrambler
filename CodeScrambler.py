@@ -93,7 +93,7 @@ def add_instructions_and_add_jump_positional_indicators(disassembled_machine_cod
                     line = line.strip()
                     if line:
                         parts = line.replace('(', '').replace(')', '').split(',')
-                        instruction = (parts[0].strip().strip("'"), int(parts[1].strip()))
+                        instruction = (int(parts[0].strip()), parts[1].strip().strip("'"), -1)
                         x86_instructions.append(instruction)
         elif pe_type == 0x20b:
             with open('x64_instructions.txt', 'r') as file:
@@ -101,7 +101,7 @@ def add_instructions_and_add_jump_positional_indicators(disassembled_machine_cod
                     line = line.strip()
                     if line:
                         parts = line.replace('(', '').replace(')', '').split(',')
-                        instruction = (parts[0].strip().strip("'"), int(parts[1].strip()), -1)
+                        instruction = (int(parts[0].strip()), parts[1].strip().strip("'"), -1)
                         x64_instructions.append(instruction)
 
         for section_name, instructions in disassembled_machine_code.items():
@@ -157,23 +157,47 @@ def add_junk_instructions_to_positional_indicators(positional_indicators, comple
     return status_success, positional_indicators
 
 
-def recompile_pe_file(positional_output, filepath):
-    status_success = True
-    return status_success
+def add_obfuscation_jumps(positional_indicators, conditional_jmp):
+    if conditional_jmp == 0:
+        for section_name, instructions in positional_indicators.items():
+            updated_instructions = {}
+            updated_index = 0
+            for index, (opcode, size, disassembly) in enumerate(instructions.values()):
+                if size == -2 and opcode == -2 and disassembly == -2:
+                    continue
+                elif size == -3 and opcode == -3 and disassembly == -3:
+                    updated_instructions[updated_index] = (2, 'eb00', -3)
+                    updated_index += 1
+                else:
+                    updated_instructions[updated_index] = instructions[index]
+                    updated_index += 1
+            positional_indicators[section_name] = updated_instructions
+
+        status_success = True
+        return status_success, positional_indicators
+
+    elif conditional_jmp == 1:
+        # Not implemented yet
+
+        status_success = True
+        return status_success, positional_indicators
+
+    else:
+        status_success = False
+        return status_success, -1
 
 
 def main():
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 4:
         print(
-            "Usage: python3 CodeScrambler.py <pefile> <junk_instruction_complexity> <jump_complexity> <conditional_"
+            "Usage: python3 CodeScrambler.py <pefile> <junk_instruction_complexity> <conditional_"
             "jump_on(1)/off(0)> <call/jump_switching_on(1)/off(0)>")
         exit(1)
     else:
         filepath = sys.argv[1]
         complexity_junk_instr = int(sys.argv[2])
-        complexity_jmp = int(sys.argv[3])
-        conditional_jmp = int(sys.argv[4])
-        call_jump_switching = int(sys.argv[5])
+        conditional_jmp = int(sys.argv[3])
+        call_jump_switching = int(sys.argv[4])
         success, code, pe_type, pe_oep, pe_ib, pe_oep_section, pe_oep_section_va = read_pe_file(filepath)
 
         if success:
@@ -193,13 +217,14 @@ def main():
 
                     if success:
                         print("Successfully added junk instructions to positions")
-                        success = recompile_pe_file(output, filepath)
+                        success, output = add_obfuscation_jumps(output, conditional_jmp)
 
                         if success:
-                            print("Successfully recompiled PE file")
+                            print("Successfully added obfuscation jumps")
+                            print(output)
 
                         elif not success:
-                            print("Failed to recompile PE file")
+                            print("Failed to add obfuscation jumps")
                             exit(1)
 
                     elif not success:

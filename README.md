@@ -31,10 +31,10 @@ This section will be updated when the project nears completion
 
 ## Release Timeline
 - Adding junk code based on complexity [x] - Date: 15/06/2024
-- Recompiling the binary with adjustments [ ]
 - Adding jumps/jump dependencies [ ]
 - Adjusting existing call/jump offsets [ ]
 - Extending to calls [ ]
+- Recompiling the binary with adjustments [ ]
 
 ## Contact
 For any questions or support, please create an issue on the GitHub repository.
