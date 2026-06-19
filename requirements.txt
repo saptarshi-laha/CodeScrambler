@@ -1,0 +1,12 @@
+# Runtime dependencies
+capstone==5.0.9          # disassembly: section bytes -> IR
+keystone-engine==0.9.2   # assembly / re-encoding: IR -> machine code
+pefile==2024.8.26        # PE parsing and rebuilding
+
+# Development / tests only
+pytest==8.4.2            # in-memory test suite (no PE files are produced)
+
+# NOTE: keystone-engine's pip wheel may not bundle the native library on macOS.
+# If "import keystone" fails with "fail to load the dynamic library", install the
+# native lib (e.g. `brew install keystone`) and copy libkeystone.dylib into the
+# keystone package directory, or ensure it is on the loader path.
